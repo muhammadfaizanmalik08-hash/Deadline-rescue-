@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f6f7f9">
+  <meta name="description" content="Turn your deadlines into a realistic study plan with Deadline Rescue.">
+
+  <title>Deadline Rescue — Make room for what matters</title>
+
+  <!-- Connect your CSS and JavaScript files. -->
+  <link rel="stylesheet" href="./style.css">
+  <script src="./app.js" defer></script>
+</head>
+
+<body>
+  <a class="skip-link" href="#main-content">Skip to planner</a>
+
+  <header class="topbar">
+    <div class="shell topbar-inner">
+      <a class="brand" href="./index.html" aria-label="Deadline Rescue home">
+        <span class="brand-mark" aria-hidden="true">↗</span>
+        <span class="brand-wordmark">
+          Deadline <em>Rescue</em><span class="brand-period">.</span>
+        </span>
+      </a>
+
+      <span class="top-note">
+        <span class="status-dot" aria-hidden="true"></span>
+        Your personal study planner
+      </span>
+    </div>
+  </header>
+
+  <main id="main-content" class="shell">
+    <section class="hero" aria-labelledby="welcome-heading">
+      <div class="hero-copy">
+        <p class="eyebrow">Less overwhelm. More focus.</p>
+
+        <h1 id="welcome-heading">
+          Big deadlines.<br>
+          <span>A manageable plan.</span>
+        </h1>
+
+        <p class="intro muted">
+          Make space for your best work. Turn everything on your list
+          into a realistic plan, one day at a time.
+        </p>
+
+        <a class="hero-link" href="#task-name">
+          Let's plan your week
+          <span aria-hidden="true">↗</span>
+        </a>
+      </div>
+
+      <div class="hero-art" aria-hidden="true">
+        <div class="art-orbit"></div>
+
+        <div class="art-card">
+          <span class="art-label">ONE STEP AT A TIME</span>
+          <span class="art-title">Find your focus.</span>
+
+          <div class="art-line">
+            <b>✓</b>
+            <span></span>
+          </div>
+
+          <div class="art-line">
+            <b>✓</b>
+            <span></span>
+          </div>
+
+          <div class="art-line">
+            <b>↗</b>
+            <span></span>
+          </div>
+
+          <div class="art-progress"></div>
+        </div>
+
+        <span class="art-spark">✦</span>
+      </div>
+    </section>
+
+    <dl class="stats" aria-label="Planning overview">
+      <div class="stat">
+        <dt>Open tasks</dt>
+        <dd id="task-count">0</dd>
+      </div>
+
+      <div class="stat">
+        <dt>Work remaining</dt>
+        <dd id="work-total">0 h</dd>
+      </div>
+
+      <div class="stat">
+        <dt>Available time</dt>
+        <dd id="availability-total">0 h</dd>
+      </div>
+    </dl>
+
+    <div class="workspace">
+      <!-- Column 1: Tasks -->
+      <div class="stack tasks-column">
+        <section class="panel" aria-labelledby="tasks-heading">
+          <div class="panel-heading">
+            <span class="step" aria-hidden="true">01</span>
+            <h2 id="tasks-heading">What needs doing?</h2>
+          </div>
+
+          <form id="task-form">
+            <input
+              type="hidden"
+              id="editing-task-id"
+              name="editingTaskId"
+              value=""
+            >
+
+            <div class="field">
+              <label for="task-name">Task name</label>
+              <input
+                id="task-name"
+                name="taskName"
+                type="text"
+                placeholder="e.g. Finish biology assignment"
+                maxlength="120"
+                required
+              >
+            </div>
+
+            <div class="form-row">
+              <div class="field">
+                <label for="task-deadline">Due date</label>
+                <input
+                  id="task-deadline"
+                  name="deadline"
+                  type="date"
+                  aria-describedby="deadline-hint"
+                  required
+                >
+              </div>
+
+              <div class="field">
+                <label for="task-hours">Hours still needed</label>
+                <input
+                  id="task-hours"
+                  name="hours"
+                  type="number"
+                  min="0.25"
+                  step="0.25"
+                  placeholder="e.g. 2.5"
+                  required
+                >
+              </div>
+            </div>
+
+            <div class="field">
+              <label for="task-priority">Importance</label>
+              <select id="task-priority" name="priority">
+                <option value="high">High</option>
+                <option value="medium" selected>Medium</option>
+                <option value="low">Low</option>
+              </select>
+            </div>
+
+            <p id="deadline-hint" class="hint">
+              Due dates mean the end of that day. Enter only the work
+              you still need to finish.
+            </p>
+
+            <p id="task-error" role="alert" hidden></p>
+
+            <div class="actions" style="margin-top: 18px;">
+              <button
+                id="save-task-button"
+                class="button button-primary button-wide"
+                type="submit"
+              >
+                + Add task
+              </button>
+
+              <button
+                id="cancel-edit-button"
+                class="button"
+                type="button"
+                hidden
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+
+          <hr class="divider">
+
+          <div class="section-heading">
+            <h3>Your tasks</h3>
+            <span id="task-list-count" class="count">0 tasks</span>
+          </div>
+
+          <p id="tasks-empty" class="empty-small muted">
+            A fresh start. Add your first task above.
+          </p>
+
+          <ul
+            id="task-list"
+            class="task-list"
+            aria-label="Your tasks"
+          ></ul>
+        </section>
+      </div>
+
+      <!-- Column 2: Availability -->
+      <div class="stack availability-column">
+        <section class="panel" aria-labelledby="availability-heading">
+          <div class="panel-heading">
+            <span class="step" aria-hidden="true">02</span>
+            <h2 id="availability-heading">Make time for it</h2>
+          </div>
+
+          <div class="form-row">
+            <div class="field">
+              <label for="plan-start">Start date</label>
+              <input
+                id="plan-start"
+                name="planStart"
+                type="date"
+                required
+              >
+            </div>
+
+            <div class="field">
+              <label for="plan-end">End date</label>
+              <input
+                id="plan-end"
+                name="planEnd"
+                type="date"
+                required
+              >
+            </div>
+          </div>
+
+          <p id="availability-hint" class="hint">
+            Enter focused study hours for each day, excluding breaks
+            and other commitments. For today, count only time you still
+            have left.
+          </p>
+
+          <!-- JavaScript creates the daily availability fields here. -->
+          <div
+            id="availability-inputs"
+            aria-describedby="availability-hint"
+          >
+            <p class="availability-placeholder muted">
+              Your daily availability fields will appear here when
+              the planner is connected.
+            </p>
+          </div>
+
+          <p id="availability-error" role="alert" hidden></p>
+
+          <button
+            id="generate-plan-button"
+            type="button"
+            class="button button-primary button-wide"
+          >
+            Generate my plan
+            <span aria-hidden="true">↗</span>
+          </button>
+
+          <button
+            id="rescue-day-button"
+            type="button"
+            class="button button-wide rescue-button"
+          >
+            ↻ Rescue my day
+          </button>
+
+          <p class="hint">
+            Plans changed? Preview a new schedule before applying it.
+          </p>
+        </section>
+      </div>
+
+      <!-- Column 3: Generated plan -->
+      <div class="stack plan-column">
+        <section
+          class="panel plan-panel"
+          aria-labelledby="plan-heading"
+        >
+          <div class="panel-heading">
+            <span class="step" aria-hidden="true">03</span>
+            <h2 id="plan-heading" tabindex="-1">Your next steps</h2>
+          </div>
+
+          <p
+            id="plan-generated-notice"
+            class="generation-notice"
+            role="status"
+            hidden
+          >
+            ✓ Plan generated · Your latest tasks and hours are included.
+          </p>
+
+          <p class="muted" style="font-size: 13px;">
+            A daily view of what to work on, and what can wait.
+          </p>
+
+          <div id="plan-empty" class="plan-empty">
+            <div class="empty-icon" aria-hidden="true">
+              <svg
+                width="28"
+                height="28"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <rect
+                  x="3"
+                  y="5"
+                  width="18"
+                  height="16"
+                  rx="3"
+                ></rect>
+                <path d="M16 3v4M8 3v4M3 11h18M8 16l2 2 5-5"></path>
+              </svg>
+            </div>
+
+            <h3>A clearer week starts here.</h3>
+            <p class="muted">
+              Add your tasks, set your available hours, and generate
+              your first plan.
+            </p>
+          </div>
+
+          <p
+            id="plan-status"
+            role="status"
+            aria-live="polite"
+            aria-atomic="true"
+          ></p>
+
+          <section
+            id="next-task-card"
+            class="next-task-card"
+            aria-labelledby="next-task-heading"
+            hidden
+          >
+            <p class="eyebrow">Your next focus</p>
+            <h3 id="next-task-heading"></h3>
+            <p id="next-task-detail"></p>
+            <span class="focus-caption">
+              One clear next step. You've got this.
+            </span>
+          </section>
+
+          <!-- JavaScript inserts the generated schedule here. -->
+          <div id="schedule-results" hidden></div>
+
+          <section
+            id="unscheduled-section"
+            aria-labelledby="unscheduled-heading"
+            hidden
+          >
+            <h3 id="unscheduled-heading">Needs more time</h3>
+            <ul id="unscheduled-list"></ul>
+          </section>
+
+          <section
+            id="overdue-section"
+            aria-labelledby="overdue-heading"
+            hidden
+          >
+            <h3 id="overdue-heading">Past the deadline</h3>
+            <ul id="overdue-list"></ul>
+          </section>
+
+          <details class="rules">
+            <summary>How your plan is put together</summary>
+            <ul>
+              <li>Earlier deadlines come first. Importance breaks ties.</li>
+              <li>Tasks can be split across days, within your available hours.</li>
+              <li>Work is never placed after its due date.</li>
+              <li>Anything that cannot fit is shown separately.</li>
+              <li>Scheduled work is not automatically marked complete.</li>
+            </ul>
+          </details>
+        </section>
+      </div>
+    </div>
+
+    <p
+      id="preview-note"
+      class="preview-note"
+      role="status"
+      hidden
+    ></p>
+
+    <noscript>
+      <p>Enable JavaScript to save tasks and generate your study plan.</p>
+    </noscript>
+  </main>
+
+  <!-- Task steps editor -->
+  <dialog
+    id="steps-dialog"
+    class="feature-dialog"
+    aria-labelledby="steps-title"
+  >
+    <form id="steps-form">
+      <div class="section-heading">
+        <h2 id="steps-title">Small steps. Real progress.</h2>
+
+        <button
+          type="button"
+          class="button"
+          id="close-steps"
+          aria-label="Close task steps"
+        >
+          ✕
+        </button>
+      </div>
+
+      <p id="steps-task-name" class="dialog-task-name"></p>
+
+      <p class="hint">
+        Split the remaining work into steps. Their minutes replace
+        the task's estimate. Completed steps stay saved and leave
+        the schedule.
+      </p>
+
+      <div id="step-editor-rows"></div>
+
+      <button type="button" class="button" id="add-step-row">
+        + Add a step
+      </button>
+
+      <p id="steps-error" role="alert" hidden></p>
+
+      <div class="dialog-actions">
+        <button type="submit" class="button button-primary">
+          Save steps &amp; update plan
+        </button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Rescue My Day preview -->
+  <dialog
+    id="rescue-dialog"
+    class="feature-dialog"
+    aria-labelledby="rescue-title"
+  >
+    <div class="section-heading">
+      <h2 id="rescue-title">Let's rescue your day.</h2>
+
+      <button
+        type="button"
+        class="button"
+        id="close-rescue"
+        aria-label="Close rescue preview"
+      >
+        ✕
+      </button>
+    </div>
+
+    <p class="hint">
+      Choose a day and enter the study time you still have available.
+      First tick off completed steps or update your task's remaining
+      hours. This changes availability, not deadlines or completed work.
+    </p>
+
+    <div class="form-row rescue-fields">
+      <div class="field">
+        <label for="rescue-date">Day to adjust</label>
+        <select id="rescue-date"></select>
+      </div>
+
+      <div class="field">
+        <label for="rescue-hours">Hours still available</label>
+        <input
+          id="rescue-hours"
+          type="number"
+          min="0"
+          max="24"
+          step="0.25"
+          required
+        >
+      </div>
+    </div>
+
+    <p id="rescue-error" role="alert" hidden></p>
+
+    <button
+      id="preview-rescue"
+      type="button"
+      class="button button-wide"
+    >
+      Preview revised plan
+    </button>
+
+    <div
+      id="rescue-preview"
+      class="rescue-preview"
+      aria-live="polite"
+      hidden
+    ></div>
+
+    <div class="dialog-actions">
+      <button
+        id="apply-rescue"
+        type="button"
+        class="button button-primary"
+        disabled
+      >
+        Apply changes
+      </button>
+    </div>
+  </dialog>
+
+  <footer>
+    <div class="shell footer-inner">
+      <div class="footer-signature">
+        <span class="footer-symbol" aria-hidden="true">↗</span>
+
+        <div>
+          <span class="brand-wordmark">
+            Deadline <em>Rescue</em><span class="brand-period">.</span>
+          </span>
+
+          <p>A little structure. A little more breathing room.</p>
+        </div>
+      </div>
+
+      <span class="footer-motto">
+        ONE TASK
+        <span aria-hidden="true">✦</span>
+        AT A TIME
+      </span>
+    </div>
+  </footer>
+</body>
+</html>
